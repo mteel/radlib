@@ -1,0 +1,35 @@
+Source: radlib
+Priority: extra
+Maintainer: Mark Teel <mteel2005@gmail.com>
+Build-Depends: debhelper (>= 7), autotools-dev, libc6, libsqlite3-dev
+Standards-Version: 3.8.3
+Section: libs
+Homepage: http://www.radlib.teel.ws
+
+Package: radlib-dev
+Section: libdevel
+Architecture: any
+Depends: librad0 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, libsqlite3-dev
+Description: rapid application development library
+ radlib is a C language library developed to abstract details of interprocess 
+ communications and common linux/unix system facilities so that application 
+ developers can concentrate on application solutions. It encourages developers
+ (whether expert or novice) to use a proven paradigm of event-driven, 
+ asynchronous design. By abstracting interprocess messaging, events, timers, 
+ and any I/O device that can be represented as a file descriptor, radlib 
+ simplifies the implementation of multi-purpose processes, as well as multi-
+ process applications.
+
+Package: librad0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libsqlite3-0
+Description: rapid application development library
+ radlib is a C language library developed to abstract details of interprocess 
+ communications and common linux/unix system facilities so that application 
+ developers can concentrate on application solutions. It encourages developers
+ (whether expert or novice) to use a proven paradigm of event-driven, 
+ asynchronous design. By abstracting interprocess messaging, events, timers, 
+ and any I/O device that can be represented as a file descriptor, radlib 
+ simplifies the implementation of multi-purpose processes, as well as multi-
+ process applications.

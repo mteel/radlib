@@ -1,0 +1,53 @@
+radlib msgRouter Test Application
+---------------------------------
+
+This directory contains the msgRouter multiprocess test application using radlib.
+
+
+PROCESSES
+---------
+
+    radmrouted       - the standard radlib message router built and installed 
+                       when radlib is installed
+    rtestd           - a non-daemon radlib process which provides standard I/O 
+                       on stdin/stdout
+    rtest2d          - a daemon radlib process which sends and receives test 
+                       messages from rtestd (and possibly remote processes)
+
+
+DESCRIPTION
+-----------
+
+The 'templated' process will initialize two timers set to expire every 15 and 33
+seconds respectively.  It also registers stdin as an IO descriptor so that 
+numbers input from the shell will be sent to 'template2d' via a message. When 
+'template2d' sends the result message it prints the result to stdout. It does 
+not run as a true daemon (see radProcessInit for details) so that stdin/stdout 
+can be used for example purposes.
+
+The 'template2d' daemon receives messages from 'templated' containing a positive
+integer, computes how many prime numbers exist which are less than the number, 
+then sends a message back to 'templated' containing the result.
+
+The purpose of this template is two-fold: first, to demonstrate how a
+multi-process application is best constructed using radlib (including the state 
+machines), and second to provide an example of the event-driven, multiple 
+stimulus capabilities of radlib processes. It can be used as a template for the
+development of new radlib applications. It also serves as a ready-to-build
+"Getting Started" type of example application.
+
+
+BUILDING
+--------
+
+Execute "make" (gmake for BSDs) from this directory
+
+
+RUNNING
+-------
+
+Execute "./runrouters start" from this directory
+
+To stop: "./runrouters stop"
+
+

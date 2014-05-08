@@ -1,0 +1,31 @@
+#!/bin/sh
+rm -rf *.cache
+
+for filename in NEWS README AUTHORS ChangeLog
+do
+    if [ ! -f "$filename" ]; then
+        echo "Creating empty $filename..."
+        touch "$filename"
+    fi
+done
+
+# find the aclocal macro directory:
+if [ -d /usr/share/aclocal ]; then
+    ACLOCAL_MACRO_DIR=/usr/share/aclocal
+elif [ -d /usr/local/share/aclocal ]; then
+    ACLOCAL_MACRO_DIR=/usr/local/share/aclocal
+else
+    ACLOCAL_MACRO_DIR=`aclocal --print-ac-dir`
+fi
+
+echo "libtoolize:"
+libtoolize
+echo "aclocal:"
+aclocal -I $ACLOCAL_MACRO_DIR
+echo "autoconf:"
+autoconf
+echo "autoheader:"
+autoheader
+echo "automake -ac:"
+automake -ac
+

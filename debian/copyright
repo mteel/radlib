@@ -1,0 +1,16 @@
+This package was debianized by: Mark Teel <mteel2005@gmail.com> on 
+Mon, 16 Nov 2009 21:09:51 -0600
+
+It was downloaded from: http://radlib.teel.ws
+
+Upstream Author: Mark Teel <mteel2005@gmail.com>
+
+Copyright (C) 2001-2009 Mark Teel <mteel2005@gmail.com>
+
+You are free to distribute this software under the terms of the BSD License.
+On Debian systems, the complete text of the BSD License can be found in the
+file `/usr/share/common-licenses/BSD'.
+
+The Debian packaging is Copyright (C) 2009 Mark Teel <mteel2005@gmail.com>
+and is licensed under the GPL version 3, and can be found in the file 
+`/usr/share/common-licenses/GPL-3'.

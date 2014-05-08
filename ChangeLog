@@ -1,0 +1,556 @@
+Release Notes for radlib
+------------------------
+
+
+
+2.12.0    03-17-2012
+--------------------
+
+1)   Added radMsgRouterMessageIsRegistered function to find out if a message Id 
+     is registered for reception by one or more clients.
+
+2)   Added radSocketClientCreateAny to radSocket which uses getaddrinfo instead
+     of gethostbyname so all of the matching records can be tried in the order
+     they are returned.
+
+3)   Added better detection of corrupted buffer headers in radbuffers.c.
+
+
+
+
+2.11.3    04-10-2011
+--------------------
+
+1)   Fix 28 byte memory leak in radconffile.c.
+
+
+
+
+2.11.2    04-01-2011
+--------------------
+
+1)   Add more verbose logging for sqlite errors.
+
+
+
+
+2.11.1    04-01-2011
+--------------------
+
+1)   Fix errant result set release when sqlite3_prepare fails in radsqlite.
+
+
+
+
+2.11.0    03-30-2011
+--------------------
+
+1)   Add a limited pthread implementation (radthread) to be used with radlib 
+     processes.
+
+
+
+2.10.3    03-14-2011
+--------------------
+
+1)   Remove HOST_IS_BIGENDIAN macro usage in favor of the WORDS_BIGENDIAN macro
+     defined in config.h by autoheader. This supports OSX universal binaries.
+
+
+
+2.10.2    02-21-2011
+--------------------
+
+1)   Change preprocessor directives to avoid negation ("!").
+
+
+
+2.10.1    05-15-2010
+--------------------
+
+1)   Fix database string type field handling bug introduced in 2.10.0.
+
+
+
+2.10.0    05-11-2010
+--------------------
+
+1)   Added remote msgRouter support. Multiple processors running radmrouted can
+     share the same message namespace. The radmrouted instance running on each 
+     processor "associates" to his peer(s) using TCP/IP sockets. A radmrouted 
+     instance may be a server and/or client. Messages routed on one processor 
+     are routed to all associated processors and delivered to all consumers
+     on each processor for that message type. It makes interprocessor
+     communications transparent.
+
+
+
+2.9.0     12-09-2009
+--------------------
+
+1)   Updated build files to support debian package creation for radlib.
+
+
+
+2.8.5     11-12-2009
+--------------------
+
+1)   Changed library search order in Makefile.AMs so the $prefix path is used first.
+
+
+
+2.8.4     08-15-2009
+--------------------
+
+1)   Made install-sh executable to fix install issue.
+
+
+
+2.8.3     07-05-2009
+--------------------
+
+1)   Added radsqlitePragma method so pragma commands can be issued to the SQLite
+     database.
+
+2)   Modified radUtilsSleep so it will wait properly if signals interrupt it.
+
+
+
+2.8.2     01-22-2009
+--------------------
+
+1)   Changed some SQLite names so it does not collide with the MySQL/PostgreSQL
+     namespace.
+
+2)   Added some system call return value checks to avoid compiler warnings.
+
+3)   Fixed a bug when a query fails and results are not expected.
+
+
+
+
+2.8.1     01-09-2009
+--------------------
+
+1)   Optimized SQLite3 access methods.
+
+2)   Added a fast text search utility (radtextsearch.[ch]). Uses red-black binary 
+     trees to store and find text strings.
+
+
+
+
+2.8.0     09-20-2008
+--------------------
+
+1)   Added SQLite3 support. The interface is very similar to the 
+     MySQL/PostgreSQL interface. It is enabled at configuration via the
+     "--enable-sqlite" option. It may be built along with MySQL or PostgreSQL
+     (it is not mutually exclusive). See the API reference for details.
+
+
+
+
+2.7.5     04-07-2008
+--------------------
+
+1)   Changed radTimeGetMSSinceEpoch to return an unsigned long long (ULONGLONG)
+     to avoid rollover.
+
+2)   Rewrote the timer subsystem to simplify and address SIGALRM race condition.
+     The API did not change.
+
+
+
+
+2.7.4     03-17-2008
+--------------------
+
+1)   Added stdin, stdout and stderr redirection to /dev/null for 
+     radUtilsBecomeDaemon.
+
+
+
+
+2.7.3     03-08-2008
+--------------------
+
+1)   Fixed several boundary issues with timers.
+
+
+
+
+2.7.2     02-10-2008
+--------------------
+
+1)   Fixed bug in radtimers.c when timers are cancelled then restarted.
+
+2)   Make "install-env" script executable.
+
+
+
+
+2.7.1     12-01-2007
+--------------------
+
+1)   Updated build environment to better support cross compilation.
+
+2)   Added "radUDPSocketReceiveFrom" which allows retrieval of the far-end
+     socket info (sockaddr_in). This provides the far-end IP and port number.
+
+3)   Added radMsgRouterProcessExit to the client API.
+
+
+
+
+2.7.0     03-30-2007
+--------------------
+
+1)   Updated to work properly on both 32 and 64-bit architectures. No special 
+     configuration required. A few API calls changed ("int" arguments became
+     "long") but only a few.
+
+2)   Increased default system buffer numbers and added an additional size of
+     8192 to better support 64-bit platforms.
+
+
+
+
+2.6.2     01-30-2006
+--------------------
+
+1)   Fixed missing error check in radSocketClientCreate for non-blocking connect.
+
+2)   Bumped up the radMsgLog buffer size to 512.
+
+
+
+
+2.6.1     12-24-2005
+--------------------
+
+1)   Added NSLU2 ipkg binary support for radlib and radlib-devel in the openslug 
+     environment. radlib can now be easily deployed on the LinkSys NSLU2 
+     openslug platform. 
+     See the new README file section "LINKSYS NSLU2 DEVELOPMENT" for details.
+
+2)   Enhanced PostGreSQL raddatabaseTableIfExists function to more efficiently
+     determine if the table exists.
+
+
+
+
+2.6.0     12-08-2005
+--------------------
+
+1)   Added more robust signal handling to the template examples.
+
+2)   Added "radProcessGetExitFlag" routine to be used in signal handlers.
+
+3)   Added new message routing API to support the "route by message ID" 
+     paradigm. Called radMsgRouter.[ch], it requires no destination to be 
+     specified when sending a message and routes messages to all subscribers of 
+     the message ID being sent. It requires a new router process which must be 
+     started prior to any other radlib processes. See radmsgRouter.h for details.
+
+4)   Changed the build environment so "raddebug" and the new message router
+     "radmrouted" are built/installed when radlib is built/installed. They are 
+     installed to the same prefix as radlib in the "bin" directory, i.e.
+     [prefix]/bin/raddebug and [prefix]/bin/radmrouted.
+
+5)   Added a new message router-based multiprocess template application example.
+     This demonstrates how to use the new radlib message router and how to 
+     implement radlib multiprocess applications.
+
+
+
+
+2.5.1     11-13-2005
+--------------------
+
+1)   Added return statement to "radUDPSocketRecvFrom" so status is returned 
+     properly.
+
+2)   Added "EINTR" handling in the reflector process of radqueue.c.
+
+
+
+
+2.5.0     11-03-2005
+--------------------
+
+1)   Changed the typedefs for LIST and LIST_ID to RADLIST and RADLIST_ID
+     respectively to avoid namespace collision with MySQL, which began using 
+     these names in version 4.1 about 12 years after early incarnations of 
+     radlib did. All radlib applications using the list utility will have to be 
+     changed to use the typedefs "RADLIST" and "RADLIST_ID".
+
+2)   Added socket debug capability and the functions "radSocketSetDebug" and 
+     "radUDPSocketSetDebug" to enable or disable the logging of all RX/TX data
+     on the socket.
+
+3)   Changed read paradigm for the UDP sockets to use the system call "recvfrom"
+     instead of the "read exact" approach as UDP datagrams cannot be read in a
+     piecemeal fashion, as required by the "read exact" approach.
+
+4)   Changed the radlib build model to use libtool and generate shared libraries
+     as well as the static library when allowed on the build platform. Modified 
+     radlib header files so they can be included in C++ source files. These two 
+     changes allow radlib to be used (linked) in C++ applications.
+
+
+
+
+2.4.0     10-22-2005
+--------------------
+
+1)   Added capability in radprocess.[ch] to add (prepend) and remove additional 
+     message queue handlers. A list of handlers is now maintained and traversed
+     when a message is received. Added functions to flag a message for retention
+     (replaces the previous srcQueueName kludge) and to halt the message handler
+     traversal (if the message is to be consumed by a given handler) which can 
+     be called from within a message handler. See radprocess.h for details.
+
+2)   Added SHA-1 and SHA-256 secure hashing algorithm utilities - an 
+     implementation of NIST's Secure Hash Algorithms. This utility generates 
+     160 bit and 256 bit hashes (or digests) respectively for memory blocks or 
+     for files. Also handles host endianness properly. See radsha.h for usage 
+     and the SHA test program in test/sha for an example implementation.
+
+3)   Added CRC16 and CRC32 (CCITT) generation utilities. See radcrc.h for
+     details and usage.
+
+
+
+
+2.3.0     10-11-2005
+--------------------
+
+1)   Added UDP datagram socket support including broadcast and multicast. 
+     See radUDPsocket.h for details. Added documentation in the API reference.
+     See test/multicast for an example multicast test program.
+
+2)   Added the "raddebug" CLI utility to attach to a running radlib system and 
+     dump buffer and semaphore usage information. Found in the debug directory 
+     of the distro, just execute make then run the executable "raddebug" on 
+     the radlib system via "./raddebug [radlib_system_id]".
+
+3)   Cleaned up radBuffersDebug output some for use by the raddebug process.
+
+4)   Changed radSystemInit so the system up time isn't reset every time a new 
+     process attaches to it.
+
+
+
+
+2.2.6     10-04-2005
+--------------------
+
+1)  Source code clean up and formatting. 
+
+
+
+
+2.2.5     09-05-2005
+--------------------
+
+1)  Changed some database field processing to comply with the postgresql 
+    changes made in version 8.
+
+
+
+
+2.2.4     08-13-2005
+--------------------
+
+1)  Removed SO_SNDLOWAT and SO_RCVLOWAT configuration as it does not appear to 
+    work correctly on some flavors of linux.
+
+2)  Fixed a few compiler warnings.
+
+
+
+
+2.2.3     07-26-2005
+--------------------
+
+1)  Removed inclusion of "sys/select.h" from radsocket.c - some flavors of BSD 
+    do not like it.
+
+
+
+
+2.2.2     07-14-2005
+--------------------
+
+1)  Moved radlib to a BSD licensing model instead of GPL. Now radlib can be 
+    incorporated in proprietary designs freely with no license obligations 
+    other than inclusion of the BSD-style licensing notice found in the file 
+    "COPYING". radlib is now completely free. Hopefully SourceForge will allow 
+    me to change the project name to "radlib" from "radlib-gpl" soon...
+
+2)  Updated the radlib API Reference to include recent additions of PostgreSQL 
+    support and the TCP socket API.
+
+3)  Changed the radSocketClientCreate function to explicitly set non-blocking 
+    IO during connects so the connect can be timed out properly. The socket 
+    is set back to blocking mode (the default) after the connection succeeds.
+
+
+
+
+
+2.2.1     06-26-2005
+--------------------
+
+1)  Added a few "setsockopt" calls to client socket creation to make the 
+    default client socket more responsive.
+
+
+
+
+
+2.2.0     06-14-2005
+--------------------
+
+1)  Added optional PostgreSQL database interface support. Wrappers libpq.a
+    client library with a logical yet simple API (see raddatabase.h). Can be
+    ported to other relational databases as the PostgreSQL-specific code is 
+    segregated in .../database/postgresql/pg_database.c. Enabled in radlib by 
+    using the "--enable-pgresql" argument to the configure script. Requires an 
+    installed/configured/running PostgreSQL server and the matching libpq
+    library and headers (see README file for more details).
+
+2)  Removed a few legacy log messages during radProcessInit and the infamous 
+    "dummyChild: no writers to reflector pipe - closing it!" message when 
+    the process queue is closed.
+
+
+
+
+2.1.0     06-06-2005
+--------------------
+
+1)  Added TCP stream socket support. See radsocket.h for details.
+
+2)  Added "radDEBUGLog" support to raddebug.[ch].
+
+
+
+
+2.0.1     05-30-2005
+--------------------
+
+1)  Changed how the config file utility handles file locks so it works better
+    when multiple processes are accessing the same file.
+
+
+
+
+2.0.0     4-23-2005
+--------------------
+
+1)  Added optional MySQL database interface support. Wrappers libmysqlclient.a
+    client library with a logical yet simple API (see raddatabase.h). Can be
+    ported to other relational databases as the MySQL-specific code is 
+    segregated in .../database/mysql/my_database.c. Enabled in radlib by using 
+    the "--enable-mysql" argument to the configure script. Requires an 
+    installed/configured/running MySQL server and the matching libmysqlclient
+    library and headers (see README file for more details).
+
+2)  Updated the radlib API Reference Manual to reflect recent additions.
+
+3)  Added an example database program to demo the radlib database API - it 
+    is databaseExample.c in the template directory and can be built and 
+    run from there (see the README file for details).
+
+4)  Fixed a few build nuisances in the template example.
+
+
+
+
+1.4.2     2-27-2005
+--------------------
+
+1)  Fixed "radSystemGetUpTimeSEC" and "radSystemGetUpTimeSTR" so that they 
+    use seconds since the EPOCH instead of milliseconds since the EPOCH - 
+    this was causing the system up time to roll over after ~49 days.
+    
+2)  Added the utility function "radTimeGetSECSinceEpoch" to support
+    storing the system start time in both milliseconds since the EPOCH
+    and seconds since the EPOCH.
+
+
+
+
+1.4.1     12-14-2004
+--------------------
+
+1)  Added an example cross compilation script for the arm-linux target.
+
+2)  Tweaked the build environment to support cross compilation. See
+    the example configure script "config-radlib-arm-linux" for a usage
+    example.
+
+
+
+
+1.4.0     11-30-2004
+--------------------
+
+1)  Converted radlib to the GNU autoconf/automake paradigm.
+    
+    Now the package is built as follows:
+    #./configure
+    #make
+    #make install
+
+    The library and headers are installed in /usr/local/bin 
+    and /usr/local/include by default, although the prefix 
+    (/usr/local) can be changed when "configure" is invoked.
+    
+    make.config, rules.make, and Makefile has been removed from
+    the distro. The "configure" script generates the build files
+    based on the host platform.
+
+2)  Removed BSD precompilation check for sem set size and
+    defaulted it to 16.
+
+
+
+1.3.2     11-21-2004
+--------------------
+
+1)  Added the file "make.config" and changed the build environment to
+    utilize it.  Linux or BSD can now be specified as well as the 
+    install location of the library and headers.
+
+2)  Fixed several trivial problems with building on a BSD platform.
+
+3)  Modified events processing so that processes can send events to 
+    themselves.
+
+4)  Added a "pkg" target to the makefile and the file "excludefiles"
+    so that the distro tarball can be built automagically.
+
+
+            
+1.3.1     04-03-2004
+--------------------
+
+1)  Added system up time support. When the first process of a radlib system
+    group calls radSystemInit, the start time is stored. From that point 
+    forward, any process in the radlib system can retrieve the system up
+    time in one of 3 ways:
+        radSystemGetUpTimeMS: returns number of milliseconds since start
+        radSystemGetUpTimeSEC: returns number of seconds since start
+        radSystemGetUpTimeSTR: returns an up time string of the form
+            "Y years, M months, D days, H hours, m minutes, S seconds".
+
+
+
+1.3.0     02-08-2004
+--------------------
+
+1)  First release of GPL version of radlib.
+

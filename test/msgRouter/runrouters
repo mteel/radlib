@@ -1,0 +1,109 @@
+#!/bin/bash
+#
+# start-templates	Start/Stop the radlib example template processes
+#
+# processnames: templated template2d
+#
+#
+
+# add to the shared library search path
+export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib
+
+show_usage()
+{
+	echo "Usage: $0 radSysID {start|stop|restart}"
+}
+
+if [ "$1" == "" ]; then
+	show_usage
+	exit 1
+fi
+if [ "$2" == "" ]; then
+	show_usage
+	exit 1
+fi
+
+# set the base directory
+echo `pwd`
+
+RUN_DIRECTORY=.
+INSTALL_DIR=.
+RADLIB_INSTALL_DIR=/usr/local/bin
+
+ROUTETEST_BIN=$INSTALL_DIR/routetest
+RADROUTER_BIN=$RADLIB_INSTALL_DIR/radmrouted
+
+ROUTETEST_PID=$RUN_DIRECTORY/routetest$1.pid
+RADROUTER_PID=$RUN_DIRECTORY/$1/radmrouted.pid
+
+case "$2" in
+    start)
+	echo "Starting radlib message router $1 and test process $1:"
+	if [ -f $RADROUTER_PID ]; then
+		echo "radlib router pid file $RADROUTER_PID exists - killing existing process"
+		kill -15 `cat $RADROUTER_PID`
+		rm -f $RADROUTER_PID
+	fi
+	if [ -f $ROUTETEST_PID ]; then
+		echo "radlib router pid file $ROUTETEST_PID exists - killing existing process"
+		kill -15 `cat $ROUTETEST_PID`
+		rm -f $ROUTETEST_PID
+	fi
+
+#	start the radlib message router
+#	he runs as a daemon, so control will be returned to this script
+#	pass him the radlib system ID, the working directory, the listen port and optionally
+#	the remote router to connect to
+	mkdir -p $RUN_DIRECTORY/$1
+	if [ -x $RADROUTER_BIN ]; then
+		case "$1" in
+			10)
+				$RADROUTER_BIN $1 $RUN_DIRECTORY/$1 $10$1 10.0.0.115:10010
+			;;
+			20)
+				$RADROUTER_BIN $1 $RUN_DIRECTORY/$1 $10$1 127.0.0.1:10010
+			;;
+			30)
+				$RADROUTER_BIN $1 $RUN_DIRECTORY/$1 $10$1 127.0.0.1:20020
+			;;
+		esac
+	else
+	    echo "Cannot find $RADROUTER_BIN - exiting!"
+	    exit 10
+	fi
+	sleep 1
+#	start the route test process - 
+#	he does not run as a daemon, so control will NOT be returned to this script
+#	until <CTRL-C> stops the process (or 'runtemplates stop' from another shell)
+	if [ -x $ROUTETEST_BIN ]; then
+	    $ROUTETEST_BIN $1
+	else
+	    echo "Cannot find $ROUTETEST_BIN - exiting!"
+	    exit 10
+	fi
+    ;;
+
+    stop)
+	echo "Shutting down radlib message router and templates..."
+	if [ -f $ROUTETEST_PID ]; then
+	    kill -15 `cat $ROUTETEST_PID`
+	fi
+#	give the template processes time to shutdown
+	sleep 1
+	if [ -f $RADROUTER_PID ]; then
+	    kill -15 `cat $RADROUTER_PID`
+	fi
+    ;;
+
+    restart)
+	$0 stop  && sleep 2
+	$0 start
+    ;;
+
+    *)
+	show_usage
+	exit 1
+esac
+
+exit 0
+

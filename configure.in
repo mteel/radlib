@@ -1,0 +1,91 @@
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ(2.5)
+AC_INIT([radlib],[2.12.0],[mteel2005@gmail.com])
+AC_CONFIG_SRCDIR([h/radmsgLog.h])
+AM_INIT_AUTOMAKE([radlib],[2.12.0])
+AM_CONFIG_HEADER([config.h])
+
+AC_ARG_ENABLE(mysql,
+[  --enable-mysql                 include radlib MySQL database support],
+[case "${enableval}" in
+  yes) mysql=true ;;
+  no)  mysql=false ;;
+  *) mysql=false ;;
+esac],[mysql=false])
+AM_CONDITIONAL(MYSQL, test x$mysql = xtrue)
+
+AC_ARG_ENABLE(pgresql,
+[  --enable-pgresql               include radlib postgreSQL database support],
+[case "${enableval}" in
+  yes) pgresql=true ;;
+  no)  pgresql=false ;;
+  *) pgresql=false ;;
+esac],[pgresql=false])
+AM_CONDITIONAL(PGRESQL, test x$pgresql = xtrue)
+
+AC_ARG_ENABLE(sqlite,
+[  --enable-sqlite                include radlib sqlite database support],
+[case "${enableval}" in
+  yes) sqlite=true ;;
+  no)  sqlite=false ;;
+  *) sqlite=false ;;
+esac],[sqlite=false])
+AM_CONDITIONAL(SQLITE, test x$sqlite = xtrue)
+
+# Check for big endian host:
+AC_C_BIGENDIAN()
+
+# Checks for programs.
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_LIBTOOL
+
+# Set a flag here if we are cross compiling (must be after AC_PROG_CC)
+AM_CONDITIONAL(CROSSCOMPILE, test x$cross_compiling = xyes)
+
+# Checks for libraries.
+AC_CHECK_LIB([c], [strncpy])
+AC_CHECK_LIB([m], [exp])
+
+# Checks for header files.
+AC_HEADER_STDC
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADERS([fcntl.h \
+                  stdlib.h \
+                  string.h \
+                  sys/time.h \
+                  syslog.h \
+                  termios.h \
+                  unistd.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_PID_T
+AC_HEADER_TIME
+AC_STRUCT_TM
+
+# Checks for library functions.
+AC_FUNC_FORK
+AC_FUNC_MALLOC
+AC_FUNC_SELECT_ARGTYPES
+AC_TYPE_SIGNAL
+AC_FUNC_STAT
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS([getcwd \
+                gethostname \
+                gettimeofday \
+                memset \
+                mkdir \
+                mkfifo \
+                select \
+                strchr \
+                strerror \
+                strrchr])
+
+AC_CONFIG_FILES([Makefile \
+                 src/Makefile \
+                 msgRouter/Makefile \
+                 debug/Makefile])
+AC_OUTPUT
+

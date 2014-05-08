@@ -1,0 +1,3 @@
+librad 0 librad0 (>= 2.8.5)
+libc 6 libc6
+libsqlite 3 libsqlite3
